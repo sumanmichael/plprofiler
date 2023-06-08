@@ -7,6 +7,7 @@
 import psycopg2
 import json
 import time
+import os
 
 from .plprofiler_report import plprofiler_report
 from .sql_split import sql_split
@@ -24,6 +25,8 @@ class plprofiler:
         if len(connoptions) == 0:
             connoptions['dsn'] = ''
         self.dbconn = psycopg2.connect(**connoptions)
+        if os.getenv("PLPROFILER_AUTOCOMMIT", "0") == "1":
+            self.dbconn.autocommit = True
         self.profiler_namespace = self.get_profiler_namespace()
 
     def version(self):
